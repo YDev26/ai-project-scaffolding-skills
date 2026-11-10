@@ -1,0 +1,15 @@
+{
+  "name": "ai-project-scaffolding-skills",
+  "description": "Create a minimal root skeleton for a new project with twelve questions and a root gate.",
+  "owner": {
+    "name": "YDev26"
+  },
+  "plugins": [
+    {
+      "name": "ai-project-scaffolding",
+      "source": "./",
+      "description": "Create a minimal root skeleton for a new project with twelve questions and a root gate.",
+      "version": "1.0.0"
+    }
+  ]
+}

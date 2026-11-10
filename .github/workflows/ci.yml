@@ -1,0 +1,66 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test (${{ matrix.os }}, py${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ["3.10", "3.12"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install package
+        run: python -m pip install .
+
+      - name: CLI version smoke
+        run: ai-project-scaffold --version
+
+      - name: Validate skill package
+        run: python scripts/validate_skill.py
+
+      - name: Validate evals structure
+        run: python scripts/check_evals.py --run-plans
+
+      - name: Validate with Agent Skills reference CLI
+        run: |
+          python -m pip install skills-ref
+          agentskills validate skills/ai-project-scaffolding
+
+      - name: Validate plugin manifest
+        if: runner.os == 'Linux'
+        run: npx --yes @anthropic-ai/claude-code plugin validate . --strict
+
+      - name: List questions
+        run: python skills/ai-project-scaffolding/scripts/standard.py tier --list --json
+
+      - name: Plan medium
+        run: python skills/ai-project-scaffolding/scripts/standard.py tier --trigger public --plan --json --root "${{ runner.temp }}/v1-plan"
+
+      - name: Apply medium
+        run: python skills/ai-project-scaffolding/scripts/standard.py tier --trigger public --apply --json --root "${{ runner.temp }}/v1-apply"
+
+      - name: Root gate
+        run: python skills/ai-project-scaffolding/scripts/standard.py check-root --tier medium --root "${{ runner.temp }}/v1-apply" --json
+
+      - name: Run tests
+        run: python tests/run_tests.py --installed-cli ai-project-scaffold
+
+      - name: Compile scripts
+        run: python -m compileall -q skills

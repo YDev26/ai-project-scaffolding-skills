@@ -1,0 +1,99 @@
+{
+  "skill": "ai-project-scaffolding",
+  "trigger": {
+    "should_trigger": [
+      "Start a new project and lay down the root skeleton.",
+      "Use the twelve questions to choose small, medium or large.",
+      "Create README, AGENTS, docs and src at the root of a new repository.",
+      "Only create the root skeleton; do not write document contents.",
+      "Run a root gate to check whether this repository matches its tier.",
+      "Plan the root directory for a new project with ai-project-scaffolding.",
+      "This repository will be public; account for the LICENSE and examples substitution.",
+      "Which build anchor, dependency slot and free slot should a large project use?",
+      "给一个全新的个人脚本项目规划最小根目录, 先不要创建文件。",
+      "我准备公开一个小工具仓库, 帮我按十二问判档并预演根骨架。",
+      "给新项目创建根项占位, 不要填写文档正文。",
+      "检查这个采用者项目的根目录是否符合中档骨架。"
+    ],
+    "should_not_trigger": [
+      "Fix a bug in this existing Python repository.",
+      "Add install instructions to the README of an existing project.",
+      "Write a product introduction article.",
+      "Create a one-off demo script.",
+      "Explain why this SQL query is slow.",
+      "Add unit tests for this function.",
+      "Configure GitHub Actions to run the test suite.",
+      "Lay down the detail skeleton and all seven docs domains.",
+      "修复现有 Python 仓库里的登录错误。",
+      "给已有 README 补充安装步骤。",
+      "帮我把 docs 的七个领域细骨架全部建出来。",
+      "解释一下这条 SQL 为什么慢。"
+    ]
+  },
+  "functional": [
+    {
+      "id": "small",
+      "args": [
+        "tier",
+        "--plan",
+        "--json"
+      ],
+      "expect_visible": [
+        "README.md",
+        "src",
+        "docs"
+      ],
+      "expect_tier": "small",
+      "expect_no_write": true
+    },
+    {
+      "id": "medium-public",
+      "args": [
+        "tier",
+        "--trigger",
+        "public",
+        "--plan",
+        "--json"
+      ],
+      "expect_visible": [
+        "README.md",
+        "AGENTS.md",
+        "docs",
+        "src",
+        "tests",
+        "LICENSE.txt"
+      ],
+      "expect_tier": "medium",
+      "expect_no_write": true
+    },
+    {
+      "id": "large",
+      "args": [
+        "tier",
+        "--trigger",
+        "build",
+        "--plan",
+        "--json"
+      ],
+      "expect_visible": [
+        "README.md",
+        "AGENTS.md",
+        "docs",
+        "src",
+        "tests",
+        "examples",
+        "LICENSE.txt",
+        "pyproject.toml",
+        "thirdparty",
+        "assets"
+      ],
+      "expect_tier": "large",
+      "expect_no_write": true
+    }
+  ],
+  "notes": [
+    "V1 is root-only; detail scaffolding is out of scope.",
+    "Functional cases validate plan JSON and no writes; they do not check created files.",
+    "The evaluator injects a temporary --root; real model trigger/confirmation evaluation is separate."
+  ]
+}

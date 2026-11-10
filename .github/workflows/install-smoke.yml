@@ -1,0 +1,49 @@
+name: install-smoke
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install with skills CLI
+        run: npx --yes skills@1.7.4 add . --skill ai-project-scaffolding -y
+
+      - name: Assert skill copied
+        run: |
+          test -f .agents/skills/ai-project-scaffolding/SKILL.md \
+            || test -f .claude/skills/ai-project-scaffolding/SKILL.md
+
+      - name: Run detached skill workflow
+        shell: bash
+        run: |
+          skill="$GITHUB_WORKSPACE/.agents/skills/ai-project-scaffolding"
+          if [ ! -f "$skill/SKILL.md" ]; then
+            skill="$GITHUB_WORKSPACE/.claude/skills/ai-project-scaffolding"
+          fi
+          target="$RUNNER_TEMP/installed-skill-adopter"
+          cd "$RUNNER_TEMP"
+          python "$skill/scripts/standard.py" tier --list --json
+          python "$skill/scripts/standard.py" tier --trigger public --plan --root "$target" --json
+          test ! -e "$target"
+          python "$skill/scripts/standard.py" tier --trigger public --apply --root "$target" --json
+          python "$skill/scripts/standard.py" check-root --tier medium --root "$target" --json

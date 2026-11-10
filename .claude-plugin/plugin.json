@@ -1,0 +1,10 @@
+{
+  "name": "ai-project-scaffolding",
+  "version": "1.0.0",
+  "description": "Create a minimal root skeleton for a new project with twelve questions and a root gate.",
+  "author": {
+    "name": "YDev26"
+  },
+  "license": "Apache-2.0",
+  "skills": "./skills/"
+}
