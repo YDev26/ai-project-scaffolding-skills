@@ -10,6 +10,10 @@ import subprocess
 import sys
 import tempfile
 
+# Windows 英文控制台默认 cp1252, 打印中文会 UnicodeEncodeError; 统一输出 UTF-8。
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+
 ROOT = Path(__file__).resolve().parents[1]
 EVALS = ROOT / "skills/ai-project-scaffolding/evals/evals.json"
 CLI = ROOT / "skills/ai-project-scaffolding/scripts/standard.py"

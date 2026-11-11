@@ -19,6 +19,10 @@ import re
 import sys
 from pathlib import Path
 
+# Windows 英文控制台默认 cp1252, 打印中文会 UnicodeEncodeError; 统一输出 UTF-8。
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+
 REPO = Path(__file__).resolve().parents[1]
 SKILLS = REPO / "skills"
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")

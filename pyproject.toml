@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ai-project-scaffolding-skills"
-version = "1.0.0"
+version = "1.0.1"
 description = "Select and create a skeleton for AI project creation. (AI 搭建项目根骨架的技能) Flow: define idea -> tier -> human confirm -> create -> root gate; no runtime dependencies."
 readme = "README.md"
 authors = [{name = "YDev26"}]

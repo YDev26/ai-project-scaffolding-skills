@@ -1,5 +1,10 @@
 # 变更记录
 
+## 1.0.1
+
+- 修复 Windows CI: workflow 设 PYTHONUTF8=1, validate_skill / check_evals 输出改 UTF-8; 英文 Windows 控制台不再因中文输出崩溃.
+- 修复 ubuntu py3.10 CI: skills-ref 要求 Python >= 3.11, 参考校验器步骤在 3.10 跳过; 3.10 仍跑安装 / 自有校验 / 测试.
+
 ## 1.0.0
 
 - 初始独立 V1 根骨架分发.
